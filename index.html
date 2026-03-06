@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Does Your Time Cost? | Salary to Time Calculator</title>
+<meta name="description" content="Find out how long you actually work to pay for everyday things. Eye-opening salary breakdown calculator.">
+<meta property="og:title" content="What Does Your Time Cost?">
+<meta property="og:description" content="Find out how long you actually work to pay for everyday things.">
+<meta property="og:type" content="website">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--card:#12121a;--border:#1e1e2e;--text:#e2e2e8;--muted:#7a7a8c;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--gold:#f59e0b}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.hero{text-align:center;padding:60px 20px 40px;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(99,102,241,.12),transparent 70%);pointer-events:none}
+h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.03em;margin-bottom:12px;background:linear-gradient(135deg,#fff 0%,#6366f1 50%,#818cf8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{color:var(--muted);font-size:1.1rem;max-width:500px;margin:0 auto}
+.input-section{max-width:480px;margin:0 auto;padding:30px 20px}
+.input-group{position:relative;margin-bottom:16px}
+.input-group label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+.input-row{display:flex;gap:12px}
+.input-row .input-group{flex:1}
+.salary-input{width:100%;padding:16px 16px 16px 36px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:1.3rem;font-weight:600;outline:none;transition:border-color .2s}
+.salary-input:focus{border-color:var(--accent)}
+.currency{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.3rem;font-weight:600;margin-top:11px}
+select.salary-input{padding:16px;font-size:1rem;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a7a8c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer}
+.results{max-width:700px;margin:0 auto;padding:0 20px 40px;opacity:0;transform:translateY(20px);transition:all .5s ease}
+.results.visible{opacity:1;transform:translateY(0)}
+.breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:32px}
+.rate-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;transition:transform .2s,border-color .2s}
+.rate-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.rate-label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.rate-value{font-size:1.6rem;font-weight:700;color:var(--accent2)}
+.rate-sub{font-size:.75rem;color:var(--muted);margin-top:4px}
+.items-header{font-size:1.4rem;font-weight:700;margin-bottom:4px;text-align:center}
+.items-sub{color:var(--muted);font-size:.9rem;text-align:center;margin-bottom:20px}
+.item-list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;transition:border-color .2s}
+.item:hover{border-color:var(--accent)}
+.item-left{display:flex;align-items:center;gap:12px}
+.item-emoji{font-size:1.4rem;width:36px;text-align:center}
+.item-name{font-weight:500;font-size:.95rem}
+.item-price{font-size:.8rem;color:var(--muted)}
+.item-time{text-align:right}
+.item-duration{font-weight:700;font-size:1rem;color:var(--green)}
+.item-bar{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden;width:120px}
+.item-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .8s ease}
+.custom-section{margin-top:32px;text-align:center}
+.custom-section h3{font-size:1.1rem;margin-bottom:12px}
+.custom-input-row{display:flex;gap:8px;max-width:360px;margin:0 auto}
+.custom-input{flex:1;padding:12px 12px 12px 28px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:1rem;outline:none}
+.custom-input:focus{border-color:var(--accent)}
+.custom-currency{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.custom-result{margin-top:12px;font-size:1.1rem;color:var(--accent2);font-weight:600;min-height:28px}
+.share-section{text-align:center;margin-top:40px;padding:30px;background:var(--card);border:1px solid var(--border);border-radius:16px}
+.share-section p{color:var(--muted);margin-bottom:16px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);margin-left:8px}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent2)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#d97706);color:#000}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,158,11,.3)}
+.footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:.85rem}
+.footer a{color:var(--accent2);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+.kofi-float{position:fixed;bottom:24px;right:24px;z-index:100;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.tag{display:inline-block;background:rgba(99,102,241,.15);color:var(--accent2);padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:600;margin-bottom:16px}
+@media(max-width:500px){.breakdown{grid-template-columns:1fr 1fr}.input-row{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">100% Free &middot; No Data Collected</div>
+  <h1>What Does Your Time Cost?</h1>
+  <p class="subtitle">Enter your salary and see how long you <em>really</em> work to pay for everyday things.</p>
+</div>
+
+<div class="input-section">
+  <div class="input-group">
+    <label>Annual Salary (before tax)</label>
+    <div style="position:relative">
+      <span class="currency">$</span>
+      <input type="text" class="salary-input" id="salary" placeholder="75,000" inputmode="numeric">
+    </div>
+  </div>
+  <div class="input-row">
+    <div class="input-group">
+      <label>Hours per week</label>
+      <select class="salary-input" id="hours">
+        <option value="35">35 hrs</option>
+        <option value="40" selected>40 hrs</option>
+        <option value="45">45 hrs</option>
+        <option value="50">50 hrs</option>
+        <option value="55">55 hrs</option>
+        <option value="60">60 hrs</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>Vacation weeks</label>
+      <select class="salary-input" id="vacation">
+        <option value="0">0 weeks</option>
+        <option value="1">1 week</option>
+        <option value="2" selected>2 weeks</option>
+        <option value="3">3 weeks</option>
+        <option value="4">4 weeks</option>
+        <option value="5">5 weeks</option>
+        <option value="6">6 weeks</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="results" id="results">
+  <div class="breakdown" id="breakdown"></div>
+
+  <h2 class="items-header">How Long You Work For...</h2>
+  <p class="items-sub">The real cost of everyday purchases, measured in your time</p>
+  <div class="item-list" id="itemList"></div>
+
+  <div class="custom-section">
+    <h3>Check Any Amount</h3>
+    <div style="position:relative;display:inline-block;width:100%;max-width:360px">
+      <div class="custom-input-row">
+        <div style="position:relative;flex:1">
+          <span class="custom-currency">$</span>
+          <input type="text" class="custom-input" id="customAmount" placeholder="Enter any price..." inputmode="numeric">
+        </div>
+      </div>
+    </div>
+    <div class="custom-result" id="customResult"></div>
+  </div>
+
+  <div class="share-section">
+    <p>Found this eye-opening? Share it with someone.</p>
+    <button class="btn btn-primary" onclick="shareResults()">Copy Share Link</button>
+    <button class="btn btn-outline" onclick="tweetResults()">Post on X</button>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>Built with care. Your data never leaves your browser.</p>
+  <p style="margin-top:8px">
+    <a href="https://ko-fi.com/KOFI_USERNAME" id="kofiLink" target="_blank">Buy me a coffee</a> if this helped you.
+  </p>
+</footer>
+
+<a href="https://ko-fi.com/KOFI_USERNAME" id="kofiFloat" class="kofi-float btn btn-gold" target="_blank" style="text-decoration:none">
+  ☕ Buy me a coffee
+</a>
+
+<script>
+const items = [
+  { emoji: '☕', name: 'Coffee', price: 5.50 },
+  { emoji: '🥑', name: 'Avocado Toast', price: 14 },
+  { emoji: '🍕', name: 'Pizza Night', price: 25 },
+  { emoji: '📱', name: 'Phone Case', price: 35 },
+  { emoji: '🎧', name: 'AirPods', price: 179 },
+  { emoji: '👟', name: 'Running Shoes', price: 120 },
+  { emoji: '🎮', name: 'Video Game', price: 70 },
+  { emoji: '📺', name: 'Netflix (year)', price: 191.88 },
+  { emoji: '💻', name: 'MacBook Air', price: 1099 },
+  { emoji: '📱', name: 'iPhone 16', price: 999 },
+  { emoji: '✈️', name: 'Weekend Trip', price: 800 },
+  { emoji: '🚗', name: 'Car Payment (mo)', price: 726 },
+  { emoji: '🏠', name: 'Avg US Rent (mo)', price: 1702 },
+  { emoji: '💍', name: 'Engagement Ring', price: 5500 },
+  { emoji: '🎓', name: '1 Year of College', price: 26000 },
+];
+
+function formatTime(hours) {
+  if (hours < 1/60) {
+    const secs = Math.round(hours * 3600);
+    return secs + 's';
+  }
+  if (hours < 1) {
+    const mins = Math.round(hours * 60);
+    return mins + ' min';
+  }
+  if (hours < 24) {
+    const h = Math.floor(hours);
+    const m = Math.round((hours - h) * 60);
+    if (h === 0) return m + ' min';
+    if (m === 0) return h + ' hr';
+    return h + 'h ' + m + 'm';
+  }
+  const days = hours / 8; // work days
+  if (days < 5.5) {
+    return Math.round(days * 10) / 10 + ' days';
+  }
+  const weeks = days / 5;
+  if (weeks < 4.5) {
+    return Math.round(weeks * 10) / 10 + ' weeks';
+  }
+  const months = weeks / 4.33;
+  return Math.round(months * 10) / 10 + ' months';
+}
+
+function formatMoney(n) {
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function parseSalary(val) {
+  return parseFloat(val.replace(/[^0-9.]/g, '')) || 0;
+}
+
+function calculate() {
+  const salary = parseSalary(document.getElementById('salary').value);
+  if (!salary) {
+    document.getElementById('results').classList.remove('visible');
+    return;
+  }
+
+  const hoursPerWeek = parseInt(document.getElementById('hours').value);
+  const vacationWeeks = parseInt(document.getElementById('vacation').value);
+  const workWeeks = 52 - vacationWeeks;
+  const totalHours = workWeeks * hoursPerWeek;
+  const hourly = salary / totalHours;
+  const perMinute = hourly / 60;
+  const perSecond = perMinute / 60;
+  const daily = hourly * (hoursPerWeek / 5);
+  const weekly = hourly * hoursPerWeek;
+  const monthly = salary / 12;
+
+  // Breakdown cards
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = `
+    <div class="rate-card">
+      <div class="rate-label">Per Hour</div>
+      <div class="rate-value">$${formatMoney(hourly)}</div>
+    </div>
+    <div class="rate-card">
+      <div class="rate-label">Per Minute</div>
+      <div class="rate-value">$${formatMoney(perMinute)}</div>
+      <div class="rate-sub">$${formatMoney(perSecond)}/sec</div>
+    </div>
+    <div class="rate-card">
+      <div class="rate-label">Per Day</div>
+      <div class="rate-value">$${formatMoney(daily)}</div>
+    </div>
+  `;
+
+  // Items
+  const maxPrice = items[items.length - 1].price;
+  const itemList = document.getElementById('itemList');
+  itemList.innerHTML = items.map(item => {
+    const hoursNeeded = item.price / hourly;
+    const barWidth = Math.min((item.price / maxPrice) * 100, 100);
+    return `
+      <div class="item">
+        <div class="item-left">
+          <span class="item-emoji">${item.emoji}</span>
+          <div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-price">$${item.price.toLocaleString()}</div>
+          </div>
+        </div>
+        <div class="item-time">
+          <div class="item-duration">${formatTime(hoursNeeded)}</div>
+          <div class="item-bar"><div class="item-bar-fill" style="width:${barWidth}%"></div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('results').classList.add('visible');
+
+  // Store hourly for custom calc
+  window._hourly = hourly;
+  calcCustom();
+}
+
+function calcCustom() {
+  const amount = parseSalary(document.getElementById('customAmount').value);
+  const el = document.getElementById('customResult');
+  if (!amount || !window._hourly) {
+    el.textContent = '';
+    return;
+  }
+  const hours = amount / window._hourly;
+  el.textContent = `You work ${formatTime(hours)} to earn $${amount.toLocaleString()}`;
+}
+
+function shareResults() {
+  const url = window.location.href.split('?')[0];
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+function tweetResults() {
+  const salary = parseSalary(document.getElementById('salary').value);
+  const hourly = window._hourly;
+  if (!hourly) return;
+  const text = `I just found out I work ${formatTime(5.50 / hourly)} for a coffee and ${formatTime(999 / hourly)} for an iPhone at my salary. Eye-opening.\n\nCheck yours:`;
+  const url = window.location.href.split('?')[0];
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+}
+
+// Format salary input with commas
+document.getElementById('salary').addEventListener('input', function(e) {
+  let v = this.value.replace(/[^0-9]/g, '');
+  if (v) this.value = parseInt(v).toLocaleString();
+  calculate();
+});
+
+document.getElementById('hours').addEventListener('change', calculate);
+document.getElementById('vacation').addEventListener('change', calculate);
+document.getElementById('customAmount').addEventListener('input', function() {
+  let v = this.value.replace(/[^0-9.]/g, '');
+  this.value = v;
+  calcCustom();
+});
+
+// Auto-calculate if salary pre-filled
+calculate();
+</script>
+</body>
+</html>
